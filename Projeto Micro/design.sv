@@ -78,13 +78,13 @@ module ALU(
 endmodule
 
 module Controle(
-    input clk,
-    input [7:0] instr,
-    output reg [2:0] reg_addr_A,
-    output reg [2:0] reg_addr_B,
-    output reg [7:0] data_in,
-    output reg write_enable,
-    output reg [7:0] alu_opcode
+    input clk, 
+    input [7: 0] instr, 
+    output reg [2: 0] reg_addr_A, 
+    output reg [2: 0] reg_addr_B, 
+    output reg [7: 0] data_in, 
+    output reg write_enable, 
+    output reg [7: 0] alu_opcode
 );
     always @(posedge clk) begin
         case (instr[7:0])
@@ -198,13 +198,13 @@ module Controle(
                 write_enable <= 1;     // Habilita escrita
                 alu_opcode <= 8'b00010010; // Instrução de escrita
             end
-            8'b00010011: begin // HALT (Parar Execução)
+            8'b00010011:  begin // HALT (Parar Execução)
                 reg_addr_A <= 3'b000;  // Não importa o valor
                 reg_addr_B <= 3'b001;  // Não importa o valor
                 write_enable <= 0;     // Não há escrita
                 alu_opcode <= 8'b00010011; // HALT
-          
-            default: begin
+            end
+            default:  begin
                 write_enable <= 0;
                 alu_opcode <= 8'b11111111; // NOP
             end
