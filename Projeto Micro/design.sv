@@ -62,6 +62,9 @@ module ALU(
             8'b00001110: result = A >> 1; // Deslocamento à direita
             8'b00001111: result = {A[6:0], 1'b0}; // Manipulação de bit: inserção de 0 no LSB
             8'b00010000: result = {1'b0, A[7:1]}; // Manipulação de bit: inserção de 0 no MSB
+            8'b00010001: result = A; // IN (Leitura)
+            8'b00010010: result = A; // OUT (Escrita)
+            8'b00010011: result = 8'b0; // HALT (Parar Execução)
             default: result = 8'b00000000; // NOP
         endcase
 
@@ -183,6 +186,23 @@ module Controle(
                 write_enable <= 1;
                 alu_opcode <= 8'b00010000;
             end
+                        8'b00010001: begin // IN (Leitura)
+                reg_addr_A <= 3'b000;  // Registra em A
+                reg_addr_B <= 3'b001;  // Não importa o B
+                write_enable <= 0;     //Não há necessidade de escrita
+                alu_opcode <= 8'b00010001; // Instrução de leitura
+            end
+            8'b00010010: begin // OUT (Escrita)
+                reg_addr_A <= 3'b000;  // Registra em A
+                reg_addr_B <= 3'b001;  // Não importa o B
+                write_enable <= 1;     // Habilita escrita
+                alu_opcode <= 8'b00010010; // Instrução de escrita
+            end
+            8'b00010011: begin // HALT (Parar Execução)
+                reg_addr_A <= 3'b000;  // Não importa o valor
+                reg_addr_B <= 3'b001;  // Não importa o valor
+                write_enable <= 0;     // Não há escrita
+                alu_opcode <= 8'b00010011; // HALT
           
             default: begin
                 write_enable <= 0;
